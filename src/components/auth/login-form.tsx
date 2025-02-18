@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Button } from "@/components/ui/button";
+import { Button as MovingButton } from "@/components/ui/moving-border";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -141,16 +141,19 @@ export function LoginForm() {
           </div>
         )}
 
-        <Button 
-          type="submit" 
-          className="w-full bg-white text-blue-600 hover:bg-gray-100"
+        <MovingButton
+          type="submit"
+          className="bg-white text-blue-600 hover:bg-gray-100 w-full text-lg font-medium"
+          containerClassName="w-full"
           disabled={isLoading}
+          duration={3000}
+          borderClassName="h-5 w-5 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]"
         >
           {isLoading 
             ? (isSignup ? "Creating Account..." : "Signing in...") 
             : (isSignup ? "Create Account" : "Sign in")
           }
-        </Button>
+        </MovingButton>
         
         <div className="text-center">
           <button
@@ -160,7 +163,7 @@ export function LoginForm() {
               loginForm.reset();
               signupForm.reset();
             }}
-            className="text-sm text-gray-200 hover:text-white"
+            className="text-base text-gray-200 hover:text-white"
           >
             {isSignup 
               ? "Already have an account? Sign in" 
