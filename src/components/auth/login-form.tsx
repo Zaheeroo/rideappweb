@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  isAdmin: z.boolean().default(false),
 });
 
 const signupSchema = z.object({
@@ -35,6 +36,7 @@ export function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
+      isAdmin: false,
     },
   });
 
@@ -125,6 +127,18 @@ export function LoginForm() {
             </p>
           )}
         </div>
+
+        {!isSignup && (
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="isAdmin"
+              {...loginForm.register("isAdmin")}
+              className="w-4 h-4 text-blue-600 bg-white/20 border-white/20 rounded focus:ring-blue-500"
+            />
+            <Label htmlFor="isAdmin" className="text-white">Login as Administrator</Label>
+          </div>
+        )}
 
         {isSignup && (
           <div className="space-y-2">
