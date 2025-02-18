@@ -8,10 +8,18 @@ import { Button as MovingButton } from "@/components/ui/moving-border";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const UserRole = {
+  CUSTOMER: "customer",
+  DRIVER: "driver",
+  ADMIN: "admin",
+} as const;
+
+type UserRoleType = typeof UserRole[keyof typeof UserRole];
+
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  isAdmin: z.boolean().default(false),
+  role: z.enum([UserRole.CUSTOMER, UserRole.DRIVER, UserRole.ADMIN]).default(UserRole.CUSTOMER),
 });
 
 const signupSchema = z.object({
@@ -36,7 +44,7 @@ export function LoginForm() {
     defaultValues: {
       email: "",
       password: "",
-      isAdmin: false,
+      role: UserRole.CUSTOMER,
     },
   });
 
@@ -129,14 +137,17 @@ export function LoginForm() {
         </div>
 
         {!isSignup && (
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              id="isAdmin"
-              {...loginForm.register("isAdmin")}
-              className="w-4 h-4 text-blue-600 bg-white/20 border-white/20 rounded focus:ring-blue-500"
-            />
-            <Label htmlFor="isAdmin" className="text-white">Login as Administrator</Label>
+          <div className="space-y-2">
+            <Label htmlFor="role" className="text-white">Login as</Label>
+            <select
+              id="role"
+              {...loginForm.register("role")}
+              className="w-full px-3 py-2 bg-white/20 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value={UserRole.CUSTOMER} className="bg-gray-800">Customer (Tourist)</option>
+              <option value={UserRole.DRIVER} className="bg-gray-800">Driver</option>
+              <option value={UserRole.ADMIN} className="bg-gray-800">Administrator</option>
+            </select>
           </div>
         )}
 
