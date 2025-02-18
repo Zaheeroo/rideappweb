@@ -39,6 +39,7 @@ type SignupFormValues = z.infer<typeof signupSchema>;
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [showEmailLogin, setShowEmailLogin] = useState(false);
   
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -73,6 +74,14 @@ export function LoginForm() {
 
   const handleGoogleSignIn = async () => {
     alert("Google Sign-in will be available soon!");
+  };
+
+  const toggleEmailLogin = () => {
+    setShowEmailLogin(!showEmailLogin);
+    if (!showEmailLogin) {
+      loginForm.reset();
+      signupForm.reset();
+    }
   };
 
   return (
@@ -129,102 +138,115 @@ export function LoginForm() {
           Continue with Google (Coming Soon)
         </button>
 
-        <div className="relative mb-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-white/10"></div>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="px-2 text-white bg-black/40">Or continue with email</span>
-          </div>
-        </div>
-
-        {isSignup && (
-          <div className="space-y-2">
-            <Label htmlFor="name" className="text-white">Full Name</Label>
-            <Input
-              id="name"
-              type="text"
-              placeholder="John Doe"
-              {...signupForm.register("name")}
-              className="bg-white/20 border-white/20 text-white placeholder:text-gray-300"
-            />
-            {signupForm.formState.errors.name && (
-              <p className="text-red-300 text-sm">{signupForm.formState.errors.name.message}</p>
-            )}
-          </div>
-        )}
-        
-        <div className="space-y-2">
-          <Label htmlFor="email" className="text-white">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            {...(isSignup ? signupForm.register("email") : loginForm.register("email"))}
-            className="bg-white/20 border-white/20 text-white placeholder:text-gray-300"
-          />
-          {(isSignup ? signupForm.formState.errors.email : loginForm.formState.errors.email) && (
-            <p className="text-red-300 text-sm">
-              {isSignup 
-                ? signupForm.formState.errors.email?.message
-                : loginForm.formState.errors.email?.message
-              }
-            </p>
-          )}
-        </div>
-        
-        <div className="space-y-2">
-          <Label htmlFor="password" className="text-white">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            {...(isSignup ? signupForm.register("password") : loginForm.register("password"))}
-            className="bg-white/20 border-white/20 text-white"
-          />
-          {(isSignup ? signupForm.formState.errors.password : loginForm.formState.errors.password) && (
-            <p className="text-red-300 text-sm">
-              {isSignup 
-                ? signupForm.formState.errors.password?.message
-                : loginForm.formState.errors.password?.message
-              }
-            </p>
-          )}
-        </div>
-
-        {isSignup && (
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              {...signupForm.register("confirmPassword")}
-              className="bg-white/20 border-white/20 text-white"
-            />
-            {signupForm.formState.errors.confirmPassword && (
-              <p className="text-red-300 text-sm">{signupForm.formState.errors.confirmPassword.message}</p>
-            )}
-          </div>
-        )}
-
-        <MovingButton
-          type="submit"
-          className="bg-white text-blue-600 hover:bg-gray-100 w-full text-lg font-medium"
-          containerClassName="w-full"
-          disabled={isLoading}
-          duration={3000}
-          borderClassName="h-5 w-5 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]"
+        <button
+          type="button"
+          onClick={toggleEmailLogin}
+          className="w-full text-center"
         >
-          {isLoading 
-            ? (isSignup ? "Creating Account..." : "Signing in...") 
-            : (isSignup ? "Create Account" : "Sign in")
-          }
-        </MovingButton>
-        
-        <div className="text-center">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 text-white bg-black/40 hover:text-blue-400 cursor-pointer transition-colors">
+                {showEmailLogin ? "Hide email login" : "Or continue with email"}
+              </span>
+            </div>
+          </div>
+        </button>
+
+        {showEmailLogin && (
+          <div className="space-y-4 pt-2">
+            {isSignup && (
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-white">Full Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  {...signupForm.register("name")}
+                  className="bg-white/20 border-white/20 text-white placeholder:text-gray-300"
+                />
+                {signupForm.formState.errors.name && (
+                  <p className="text-red-300 text-sm">{signupForm.formState.errors.name.message}</p>
+                )}
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-white">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                {...(isSignup ? signupForm.register("email") : loginForm.register("email"))}
+                className="bg-white/20 border-white/20 text-white placeholder:text-gray-300"
+              />
+              {(isSignup ? signupForm.formState.errors.email : loginForm.formState.errors.email) && (
+                <p className="text-red-300 text-sm">
+                  {isSignup 
+                    ? signupForm.formState.errors.email?.message
+                    : loginForm.formState.errors.email?.message
+                  }
+                </p>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-white">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                {...(isSignup ? signupForm.register("password") : loginForm.register("password"))}
+                className="bg-white/20 border-white/20 text-white"
+              />
+              {(isSignup ? signupForm.formState.errors.password : loginForm.formState.errors.password) && (
+                <p className="text-red-300 text-sm">
+                  {isSignup 
+                    ? signupForm.formState.errors.password?.message
+                    : loginForm.formState.errors.password?.message
+                  }
+                </p>
+              )}
+            </div>
+
+            {isSignup && (
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-white">Confirm Password</Label>
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  {...signupForm.register("confirmPassword")}
+                  className="bg-white/20 border-white/20 text-white"
+                />
+                {signupForm.formState.errors.confirmPassword && (
+                  <p className="text-red-300 text-sm">{signupForm.formState.errors.confirmPassword.message}</p>
+                )}
+              </div>
+            )}
+
+            <MovingButton
+              type="submit"
+              className="bg-white text-blue-600 hover:bg-gray-100 w-full text-lg font-medium"
+              containerClassName="w-full"
+              disabled={isLoading}
+              duration={3000}
+              borderClassName="h-5 w-5 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]"
+            >
+              {isLoading 
+                ? (isSignup ? "Creating Account..." : "Signing in...") 
+                : (isSignup ? "Create Account" : "Sign in")
+              }
+            </MovingButton>
+          </div>
+        )}
+
+        <div className="text-center pt-2">
           <button
             type="button"
             onClick={() => {
               setIsSignup(!isSignup);
+              setShowEmailLogin(false);
               loginForm.reset();
               signupForm.reset();
             }}
