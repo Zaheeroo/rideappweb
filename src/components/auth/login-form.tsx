@@ -61,7 +61,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-lg p-6 shadow-xl">
+    <div className="bg-black/40 backdrop-blur-lg rounded-lg p-6 shadow-xl border border-white/10">
       <form onSubmit={
         isSignup 
           ? signupForm.handleSubmit(onSubmit)

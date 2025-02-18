@@ -6,9 +6,9 @@ export default function Home() {
     <main className="min-h-screen">
       <WavyBackground 
         className="max-w-4xl mx-auto"
-        colors={['#4BA3C3', '#63C7B2', '#8ECAE6']}
-        waveOpacity={0.3}
-        blur={5}
+        colors={['#1a365d', '#2c5282', '#2b6cb0']}
+        waveOpacity={0.2}
+        blur={3}
       >
         <div className="w-full max-w-md mx-auto p-6 space-y-6">
           <div className="text-center space-y-2">
