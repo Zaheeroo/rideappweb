@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { supabase } from "@/lib/supabase";
-import { User } from "@supabase/supabase-js";
 
 const handler = NextAuth({
   providers: [
@@ -9,32 +8,48 @@ const handler = NextAuth({
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        role: { label: "Role", type: "text" }
       },
       async authorize(credentials) {
         try {
           if (!credentials?.email || !credentials?.password) {
-            return null;
+            throw new Error("Please provide both email and password");
           }
 
+          // Attempt to sign in with Supabase
           const { data, error } = await supabase.auth.signInWithPassword({
             email: credentials.email,
             password: credentials.password,
           });
 
-          if (error || !data?.user) {
-            console.error('Supabase auth error:', error?.message);
-            return null;
+          if (error) {
+            console.error('Supabase auth error:', error.message);
+            throw new Error(error.message);
           }
 
+          if (!data?.user) {
+            throw new Error("No user found");
+          }
+
+          // Get the user's metadata
+          const userRole = data.user.user_metadata?.role || 'customer';
+
+          // Verify that the role matches what was provided
+          if (credentials.role && credentials.role !== userRole) {
+            throw new Error(`Invalid role. You are registered as a ${userRole}`);
+          }
+
+          // Return the user object
           return {
             id: data.user.id,
             email: data.user.email || '',
             name: data.user.user_metadata?.full_name || data.user.email || '',
+            role: userRole,
           };
         } catch (error) {
           console.error('Auth error:', error);
-          return null;
+          throw error;
         }
       },
     }),
@@ -43,20 +58,32 @@ const handler = NextAuth({
     signIn: '/login',
   },
   callbacks: {
-    async session({ session, token }) {
-      if (session?.user) {
-        session.user.id = token.sub as string;
-      }
-      return session;
-    },
     async jwt({ token, user }) {
       if (user) {
+        // Add user information to the token
         token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
       }
       return token;
     },
+    async session({ session, token }) {
+      if (session?.user) {
+        // Add user information to the session
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+        session.user.name = token.name as string;
+        session.user.role = token.role as string;
+      }
+      return session;
+    },
   },
-  secret: process.env.NEXTAUTH_SECRET || "temporary-secret-for-development",
+  session: {
+    strategy: "jwt",
+  },
+  debug: process.env.NODE_ENV === 'development',
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST }; 

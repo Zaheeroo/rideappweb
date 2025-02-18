@@ -8,6 +8,8 @@ import { Button as MovingButton } from "@/components/ui/moving-border";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 const UserRole = {
   CUSTOMER: "customer",
@@ -27,7 +29,8 @@ const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string()
+  confirmPassword: z.string(),
+  role: z.enum([UserRole.CUSTOMER]).default(UserRole.CUSTOMER),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -37,9 +40,12 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 export function LoginForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
   const [showEmailLogin, setShowEmailLogin] = useState(false);
+  const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -57,16 +63,89 @@ export function LoginForm() {
       email: "",
       password: "",
       confirmPassword: "",
+      role: UserRole.CUSTOMER,
     },
   });
 
   async function onSubmit(data: LoginFormValues | SignupFormValues) {
     setIsLoading(true);
+    setError("");
+    setSuccessMessage("");
+
     try {
-      // TODO: Implement actual login/signup logic here
-      console.log(data);
+      if (isSignup) {
+        // Handle signup - always set role to customer
+        const signupData = data as SignupFormValues;
+        const { data: authData, error: signupError } = await supabase.auth.signUp({
+          email: signupData.email,
+          password: signupData.password,
+          options: {
+            data: {
+              full_name: signupData.name,
+              role: UserRole.CUSTOMER, // Always set to customer for new signups
+            },
+          },
+        });
+
+        if (signupError) {
+          setError(signupError.message);
+          return;
+        }
+
+        if (!authData.user) {
+          setError('Failed to create account');
+          return;
+        }
+
+        // Show success message instead of auto-signing in
+        setSuccessMessage(
+          "Account created successfully! Please check your email to verify your account before signing in."
+        );
+        setIsSignup(false); // Switch back to login view
+        loginForm.reset(); // Reset the login form
+        return;
+
+      } else {
+        // Handle login
+        const loginData = data as LoginFormValues;
+        try {
+          const result = await signIn('credentials', {
+            email: loginData.email,
+            password: loginData.password,
+            role: loginData.role,
+            redirect: false,
+          });
+
+          if (result?.error) {
+            // Handle specific error messages
+            if (result.error.includes('Email not confirmed')) {
+              setError('Please verify your email address before signing in. Check your inbox for the verification link.');
+            } else if (result.error.includes('Invalid role')) {
+              setError('You do not have permission to sign in with this role. Please select the correct role.');
+            } else if (result.error.includes('Invalid login credentials')) {
+              setError('Invalid email or password. Please check your credentials and try again.');
+            } else if (result.error === 'CredentialsSignin') {
+              setError('Invalid email or password. Please check your credentials and try again.');
+            } else {
+              setError(result.error);
+            }
+            return;
+          }
+
+          // If login is successful
+          setSuccessMessage("Login successful! Redirecting...");
+          
+          // Simple redirect to dashboard
+          router.push('/dashboard');
+          router.refresh();
+        } catch (error) {
+          console.error('Login error:', error);
+          setError('An unexpected error occurred during login');
+        }
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Auth error:', error);
+      setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -95,6 +174,16 @@ export function LoginForm() {
           <h2 className="text-2xl font-bold text-white">
             {isSignup ? "Create Account" : "Welcome Back"}
           </h2>
+          {error && (
+            <p className="mt-2 text-sm text-red-400">
+              {error}
+            </p>
+          )}
+          {successMessage && (
+            <p className="mt-2 text-sm text-green-400">
+              {successMessage}
+            </p>
+          )}
         </div>
 
         {!isSignup && (
@@ -158,19 +247,21 @@ export function LoginForm() {
         {showEmailLogin && (
           <div className="space-y-4 pt-2">
             {isSignup && (
-              <div className="space-y-2">
-                <Label htmlFor="name" className="text-white">Full Name</Label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="John Doe"
-                  {...signupForm.register("name")}
-                  className="bg-white/20 border-white/20 text-white placeholder:text-gray-300"
-                />
-                {signupForm.formState.errors.name && (
-                  <p className="text-red-300 text-sm">{signupForm.formState.errors.name.message}</p>
-                )}
-              </div>
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-white">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="John Doe"
+                    {...signupForm.register("name")}
+                    className="bg-white/20 border-white/20 text-white placeholder:text-gray-300"
+                  />
+                  {signupForm.formState.errors.name && (
+                    <p className="text-red-300 text-sm">{signupForm.formState.errors.name.message}</p>
+                  )}
+                </div>
+              </>
             )}
             
             <div className="space-y-2">
