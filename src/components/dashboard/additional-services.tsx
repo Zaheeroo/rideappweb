@@ -46,7 +46,7 @@ const services: Service[] = [
 export default function AdditionalServices() {
   return (
     <section className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-semibold mb-6">Additional Services</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Additional Services</h2>
       
       <div className="grid gap-4">
         {services.map((service) => (
@@ -56,14 +56,14 @@ export default function AdditionalServices() {
             className="group block p-4 border rounded-lg hover:border-primary transition-colors"
           >
             <div className="flex items-start gap-4">
-              <div className="text-gray-600 group-hover:text-primary transition-colors">
+              <div className="text-gray-800 group-hover:text-blue-600 transition-colors">
                 {service.icon}
               </div>
               <div>
-                <h3 className="font-semibold group-hover:text-primary transition-colors">
+                <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-gray-800 mt-1">
                   {service.description}
                 </p>
               </div>

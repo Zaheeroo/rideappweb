@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { Button as MovingButton } from "@/components/ui/moving-border";
 import {
   DashboardHeader,
   UpcomingTrips,
@@ -10,7 +11,6 @@ import {
   AdditionalServices,
   ChatWidget
 } from '@/components/dashboard';
-import { WavyBackground } from '@/components/ui/wavy-background';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -31,29 +31,32 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100">
       <DashboardHeader />
       
       <main className="container mx-auto px-4 py-8">
         {/* Hero Section */}
-        <div className="relative">
-          <WavyBackground className="max-w-4xl mx-auto">
-            <div className="relative z-10 text-center py-12">
-              <h1 className="text-3xl font-bold mb-4">
-                Welcome, {session.user?.name}!
-              </h1>
-              <button
+        <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-gray-800 mb-6">
+              Welcome, {session.user?.name}!
+            </h1>
+            <div className="max-w-sm mx-auto">
+              <MovingButton
                 onClick={() => router.push('/dashboard/book')}
-                className="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors"
+                className="bg-blue-600 text-white hover:bg-blue-700 w-full text-lg font-medium"
+                containerClassName="w-full"
+                duration={3000}
+                borderClassName="h-5 w-5 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]"
               >
                 Book a Trip
-              </button>
+              </MovingButton>
             </div>
-          </WavyBackground>
+          </div>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Upcoming Trips */}
           <div className="lg:col-span-2">
             <UpcomingTrips />

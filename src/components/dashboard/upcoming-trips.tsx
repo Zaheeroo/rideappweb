@@ -50,10 +50,10 @@ export default function UpcomingTrips() {
 
   return (
     <section className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-semibold mb-6">Upcoming Trips</h2>
+      <h2 className="text-2xl font-semibold text-gray-800 mb-6">Upcoming Trips</h2>
       
       {trips.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">
+        <p className="text-gray-800 text-center py-8">
           No upcoming trips scheduled. Ready to plan your next journey?
         </p>
       ) : (
@@ -65,41 +65,41 @@ export default function UpcomingTrips() {
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-2 text-gray-800">
                     <Calendar className="w-4 h-4" />
                     <span>{formatDate(trip.pickupTime)}</span>
                   </div>
                   
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-gray-600 mt-1" />
+                    <MapPin className="w-4 h-4 text-gray-800 mt-1" />
                     <div>
-                      <p className="text-sm text-gray-600">From:</p>
-                      <p>{trip.pickupLocation}</p>
-                      <p className="text-sm text-gray-600 mt-1">To:</p>
-                      <p>{trip.destination}</p>
+                      <p className="text-sm text-gray-800">From:</p>
+                      <p className="text-gray-800">{trip.pickupLocation}</p>
+                      <p className="text-sm text-gray-800 mt-1">To:</p>
+                      <p className="text-gray-800">{trip.destination}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-gray-600" />
+                  <div className="flex items-center gap-2 text-gray-800">
+                    <User className="w-4 h-4" />
                     <span>{trip.driverName}</span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <Car className="w-4 h-4 text-gray-600" />
+                  <div className="flex items-center gap-2 text-gray-800">
+                    <Car className="w-4 h-4" />
                     <span>{trip.vehicleInfo}</span>
                   </div>
                 </div>
 
                 <div className="flex md:flex-col gap-3 md:min-w-[120px]">
                   <button
-                    className="flex-1 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                     onClick={() => {/* Handle view details */}}
                   >
                     View Details
                   </button>
                   <button
-                    className="flex-1 px-4 py-2 border border-red-500 text-red-500 rounded-md hover:bg-red-50 transition-colors"
+                    className="flex-1 px-4 py-2 border border-red-500 text-red-600 rounded-md hover:bg-red-50 transition-colors"
                     onClick={() => {/* Handle cancel trip */}}
                   >
                     Cancel

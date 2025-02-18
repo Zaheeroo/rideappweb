@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Calendar, Clock, MapPin, Plane } from 'lucide-react';
-import { WavyBackground } from '@/components/ui/wavy-background';
 
 type TripType = 'airport' | 'point-to-point' | 'hourly';
 
@@ -33,17 +32,17 @@ export default function BookTripPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-100 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
-          <WavyBackground className="mb-8">
-            <h1 className="text-3xl font-bold text-center mb-2">Book a Trip</h1>
-            <p className="text-gray-600 text-center">
-              Fill out the form below to schedule your next ride
-            </p>
-          </WavyBackground>
+          <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold text-gray-800 mb-2">Book a Trip</h1>
+              <p className="text-gray-700">
+                Fill out the form below to schedule your next ride
+              </p>
+            </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Trip Type Selection */}
               <div className="grid grid-cols-3 gap-4">
@@ -52,8 +51,8 @@ export default function BookTripPage() {
                   onClick={() => setTripType('point-to-point')}
                   className={`p-4 text-center rounded-lg border ${
                     tripType === 'point-to-point'
-                      ? 'border-primary bg-primary/10'
-                      : 'border-gray-200 hover:border-primary/50'
+                      ? 'border-blue-600 bg-blue-50 text-blue-600'
+                      : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
                   }`}
                 >
                   <MapPin className="w-6 h-6 mx-auto mb-2" />
@@ -64,8 +63,8 @@ export default function BookTripPage() {
                   onClick={() => setTripType('airport')}
                   className={`p-4 text-center rounded-lg border ${
                     tripType === 'airport'
-                      ? 'border-primary bg-primary/10'
-                      : 'border-gray-200 hover:border-primary/50'
+                      ? 'border-blue-600 bg-blue-50 text-blue-600'
+                      : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
                   }`}
                 >
                   <Plane className="w-6 h-6 mx-auto mb-2" />
@@ -76,8 +75,8 @@ export default function BookTripPage() {
                   onClick={() => setTripType('hourly')}
                   className={`p-4 text-center rounded-lg border ${
                     tripType === 'hourly'
-                      ? 'border-primary bg-primary/10'
-                      : 'border-gray-200 hover:border-primary/50'
+                      ? 'border-blue-600 bg-blue-50 text-blue-600'
+                      : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
                   }`}
                 >
                   <Clock className="w-6 h-6 mx-auto mb-2" />
@@ -88,7 +87,7 @@ export default function BookTripPage() {
               {/* Date and Time */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-800 mb-1">
                     Date
                   </label>
                   <input
@@ -96,11 +95,11 @@ export default function BookTripPage() {
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
                     required
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600/50 text-gray-800 placeholder-gray-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-800 mb-1">
                     Time
                   </label>
                   <input
@@ -108,14 +107,14 @@ export default function BookTripPage() {
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     required
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600/50 text-gray-800 placeholder-gray-500"
                   />
                 </div>
               </div>
 
               {/* Pickup Location */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-gray-800 mb-1">
                   Pickup Location
                 </label>
                 <input
@@ -124,14 +123,14 @@ export default function BookTripPage() {
                   onChange={(e) => setPickupLocation(e.target.value)}
                   placeholder="Enter pickup address"
                   required
-                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600/50 text-gray-800 placeholder-gray-500"
                 />
               </div>
 
               {/* Dropoff Location or Hours */}
               {tripType !== 'hourly' ? (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-800 mb-1">
                     Dropoff Location
                   </label>
                   <input
@@ -140,21 +139,21 @@ export default function BookTripPage() {
                     onChange={(e) => setDropoffLocation(e.target.value)}
                     placeholder="Enter destination address"
                     required
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600/50 text-gray-800 placeholder-gray-500"
                   />
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-800 mb-1">
                     Number of Hours
                   </label>
                   <select
                     value={hours}
                     onChange={(e) => setHours(e.target.value)}
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600/50 text-gray-800"
                   >
                     {[2, 3, 4, 5, 6, 7, 8].map((h) => (
-                      <option key={h} value={h}>
+                      <option key={h} value={h} className="text-gray-800">
                         {h} hours
                       </option>
                     ))}
@@ -165,7 +164,7 @@ export default function BookTripPage() {
               {/* Flight Number (for airport transfers) */}
               {tripType === 'airport' && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-800 mb-1">
                     Flight Number (Optional)
                   </label>
                   <input
@@ -173,7 +172,7 @@ export default function BookTripPage() {
                     value={flightNumber}
                     onChange={(e) => setFlightNumber(e.target.value)}
                     placeholder="Enter flight number"
-                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-600/50 text-gray-800 placeholder-gray-500"
                   />
                 </div>
               )}
@@ -182,7 +181,7 @@ export default function BookTripPage() {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-primary text-white px-8 py-3 rounded-md hover:bg-primary/90 transition-colors"
+                  className="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors font-medium"
                 >
                   Book Now
                 </button>
