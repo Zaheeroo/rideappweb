@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { LoginForm } from '@/components/auth/login-form';
-import { WavyBackground } from '@/components/ui/wavy-background';
 
 export default function LoginPage() {
   const { data: session, status } = useSession();
@@ -26,16 +25,19 @@ export default function LoginPage() {
   }, [status, session, router]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center">
+        <div className="animate-pulse text-white text-lg">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex flex-col justify-center">
-      <WavyBackground className="max-w-4xl mx-auto">
-        <div className="relative z-10">
-          <LoginForm />
-        </div>
-      </WavyBackground>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 flex items-center justify-center p-4">
+      <div className="relative w-full max-w-md">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-20 blur-3xl -z-10" />
+        <LoginForm />
+      </div>
     </div>
   );
 } 
