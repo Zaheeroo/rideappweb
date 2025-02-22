@@ -108,14 +108,16 @@ export function DriverTrips() {
     }
   };
 
-  const getTripTypeDisplay = (type: string) => {
+  const getTripTypeDisplay = (type: Trip['trip_type']) => {
     switch (type) {
       case 'airport_pickup':
         return 'Airport Pickup';
       case 'airport_dropoff':
         return 'Airport Dropoff';
+      case 'city_tour':
+        return 'City Tour';
       default:
-        return 'Point to Point';
+        return type;
     }
   };
 

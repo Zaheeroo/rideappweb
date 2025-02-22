@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 export default function BookTripPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [tripType, setTripType] = useState<TripType>('point-to-point');
+  const [tripType, setTripType] = useState<TripType>('city_tour');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [pickupLocation, setPickupLocation] = useState('');
@@ -33,9 +33,9 @@ export default function BookTripPage() {
         trip_type: tripType,
         pickup_time: pickupDateTime.toISOString(),
         pickup_location: pickupLocation,
-        dropoff_location: tripType !== 'hourly' ? dropoffLocation : undefined,
-        flight_number: tripType === 'airport' ? flightNumber : undefined,
-        hours: tripType === 'hourly' ? parseInt(hours) : undefined,
+        dropoff_location: tripType !== 'city_tour' ? dropoffLocation : undefined,
+        flight_number: (tripType === 'airport_pickup' || tripType === 'airport_dropoff') ? flightNumber : undefined,
+        hours: tripType === 'city_tour' ? parseInt(hours) : undefined,
       });
 
       toast.success('Trip booked successfully!');
@@ -77,39 +77,39 @@ export default function BookTripPage() {
               <div className="grid grid-cols-3 gap-4">
                 <button
                   type="button"
-                  onClick={() => setTripType('point-to-point')}
+                  onClick={() => setTripType('airport_pickup')}
                   className={`p-4 text-center rounded-lg border ${
-                    tripType === 'point-to-point'
-                      ? 'border-blue-600 bg-blue-50 text-blue-600'
-                      : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
-                  }`}
-                >
-                  <MapPin className="w-6 h-6 mx-auto mb-2" />
-                  <span className="block font-medium">Point to Point</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTripType('airport')}
-                  className={`p-4 text-center rounded-lg border ${
-                    tripType === 'airport'
+                    tripType === 'airport_pickup'
                       ? 'border-blue-600 bg-blue-50 text-blue-600'
                       : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
                   }`}
                 >
                   <Plane className="w-6 h-6 mx-auto mb-2" />
-                  <span className="block font-medium">Airport Transfer</span>
+                  <span className="block font-medium">Airport Pickup</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTripType('hourly')}
+                  onClick={() => setTripType('airport_dropoff')}
                   className={`p-4 text-center rounded-lg border ${
-                    tripType === 'hourly'
+                    tripType === 'airport_dropoff'
+                      ? 'border-blue-600 bg-blue-50 text-blue-600'
+                      : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
+                  }`}
+                >
+                  <Plane className="w-6 h-6 mx-auto mb-2 rotate-45" />
+                  <span className="block font-medium">Airport Dropoff</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTripType('city_tour')}
+                  className={`p-4 text-center rounded-lg border ${
+                    tripType === 'city_tour'
                       ? 'border-blue-600 bg-blue-50 text-blue-600'
                       : 'border-gray-300 text-gray-800 hover:border-blue-600/50'
                   }`}
                 >
                   <Clock className="w-6 h-6 mx-auto mb-2" />
-                  <span className="block font-medium">Hourly Service</span>
+                  <span className="block font-medium">City Tour</span>
                 </button>
               </div>
 
@@ -157,7 +157,7 @@ export default function BookTripPage() {
               </div>
 
               {/* Dropoff Location or Hours */}
-              {tripType !== 'hourly' ? (
+              {tripType !== 'city_tour' ? (
                 <div>
                   <label className="block text-sm font-medium text-gray-800 mb-1">
                     Dropoff Location
@@ -191,7 +191,7 @@ export default function BookTripPage() {
               )}
 
               {/* Flight Number (for airport transfers) */}
-              {tripType === 'airport' && (
+              {(tripType === 'airport_pickup' || tripType === 'airport_dropoff') && (
                 <div>
                   <label className="block text-sm font-medium text-gray-800 mb-1">
                     Flight Number (Optional)

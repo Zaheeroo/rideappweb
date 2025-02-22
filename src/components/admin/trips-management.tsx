@@ -9,7 +9,8 @@ import {
   getDriverStats,
   type DetailedTrip,
   type DriverStats,
-  type TripStatus
+  type TripStatus,
+  type TripType
 } from '@/lib/supabase/admin-operations';
 import { toast } from 'sonner';
 import {
@@ -87,16 +88,26 @@ export default function TripsManagement() {
         setTrips(trips.map(trip =>
           trip.id === tripId ? {
             ...trip,
+            driver_id: driver.id,
             driver: {
+              id: driver.id,
               full_name: driver.full_name,
               email: driver.email,
+              phone_number: driver.phone_number,
               avatar_url: driver.avatar_url,
               driver_profile: {
+                user_id: driver.id,
+                license_number: driver.license_number,
                 vehicle_make: driver.vehicle_make,
                 vehicle_model: driver.vehicle_model,
+                vehicle_year: driver.vehicle_year,
+                vehicle_color: driver.vehicle_color,
                 vehicle_plate: driver.vehicle_plate,
-              },
-            },
+                is_active: true,
+                email: driver.email,
+                avatar_url: driver.avatar_url,
+              }
+            }
           } : trip
         ));
       }
@@ -139,7 +150,7 @@ export default function TripsManagement() {
     });
   };
 
-  const getTripTypeLabel = (type: string) => {
+  const getTripTypeLabel = (type: TripType) => {
     switch (type) {
       case 'airport_pickup':
         return 'Airport Pickup';
@@ -167,16 +178,16 @@ export default function TripsManagement() {
     }
   };
 
-  const getTripTypeColor = (type: string) => {
+  const getTripTypeColor = (type: TripType) => {
     switch (type) {
       case 'airport_pickup':
-        return 'bg-purple-100 text-purple-800';
+        return 'bg-blue-50 text-blue-700';
       case 'airport_dropoff':
-        return 'bg-indigo-100 text-indigo-800';
+        return 'bg-purple-50 text-purple-700';
       case 'city_tour':
-        return 'bg-teal-100 text-teal-800';
+        return 'bg-amber-50 text-amber-700';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-50 text-gray-700';
     }
   };
 
@@ -216,13 +227,12 @@ export default function TripsManagement() {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar className="border border-gray-200">
-                      <AvatarImage src={trip.customer.avatar_url} />
                       <AvatarFallback className="bg-blue-100 text-blue-800">
-                        {trip.customer.full_name.split(' ').map((n: string) => n[0]).join('')}
+                        {trip.user_id.substring(0, 2).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium text-gray-900">{trip.customer.full_name}</p>
+                      <p className="font-medium text-gray-900">{trip.user_id}</p>
                     </div>
                   </div>
                 </TableCell>
@@ -279,9 +289,9 @@ export default function TripsManagement() {
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 text-gray-500 mt-1" />
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{trip.dropoff_location}</p>
+                      <p className="text-sm font-medium text-gray-900">{trip.dropoff_location || 'N/A'}</p>
                       <p className="text-xs text-gray-500">
-                        {formatDate(trip.dropoff_time)}
+                        {trip.dropoff_time ? formatDate(trip.dropoff_time) : 'Not set'}
                       </p>
                     </div>
                   </div>

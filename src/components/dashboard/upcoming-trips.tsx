@@ -161,14 +161,14 @@ export default function UpcomingTrips() {
                     </div>
                   )}
 
-                  {trip.trip_type === 'airport' && trip.flight_number && (
+                  {(trip.trip_type === 'airport_pickup' || trip.trip_type === 'airport_dropoff') && trip.flight_number && (
                     <div className="flex items-center gap-2 text-gray-700">
                       <span className="font-medium">Flight:</span>
                       <span>{trip.flight_number}</span>
                     </div>
                   )}
 
-                  {trip.trip_type === 'hourly' && trip.hours && (
+                  {trip.trip_type === 'city_tour' && trip.hours && (
                     <div className="flex items-center gap-2 text-gray-700">
                       <span className="font-medium">Duration:</span>
                       <span>{trip.hours} hours</span>
@@ -197,7 +197,8 @@ export default function UpcomingTrips() {
       )}
 
       <TripDetailsModal
-        tripId={selectedTripId}
+        trip={trips.find(trip => trip.id === selectedTripId) || null}
+        isOpen={!!selectedTripId}
         onClose={() => setSelectedTripId(null)}
       />
 

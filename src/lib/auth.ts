@@ -74,7 +74,7 @@ export const authOptions: NextAuthOptions = {
           // Simplified role validation
           if (
             userProfile.role === UserRole.ADMIN ||
-            (userProfile.role === requestedRole && [UserRole.CUSTOMER, UserRole.DRIVER].includes(requestedRole))
+            (userProfile.role === requestedRole && [UserRole.CUSTOMER.toString(), UserRole.DRIVER.toString()].includes(requestedRole))
           ) {
             return {
               id: userProfile.id,

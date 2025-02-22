@@ -1,4 +1,7 @@
 import { supabase } from '@/lib/supabase';
+import type { TripType } from '@/lib/types';
+
+export type { TripType };
 
 export interface DriverProfile {
   license_number: string;
@@ -400,29 +403,29 @@ export type TripStatus = 'scheduled' | 'en-route' | 'completed' | 'cancelled';
 
 export interface DetailedTrip {
   id: string;
-  customer: {
-    full_name: string;
-    email: string;
-    avatar_url?: string;
-  };
+  user_id: string;
+  driver_id?: string;
   driver?: {
+    id: string;
     full_name: string;
-    email: string;
+    phone_number?: string;
+    email?: string;
     avatar_url?: string;
-    driver_profile: {
-      vehicle_make: string;
-      vehicle_model: string;
-      vehicle_plate: string;
-    };
+    driver_profile: DriverProfile;
   };
-  trip_type: string;
+  trip_type: TripType;
   status: TripStatus;
   pickup_time: string;
-  dropoff_time: string;
+  dropoff_time?: string;
   pickup_location: string;
-  dropoff_location: string;
+  dropoff_location?: string;
+  flight_number?: string;
+  hours?: number;
   cost: number;
   rating?: number;
+  reviewed: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 export async function getTrips(): Promise<DetailedTrip[]> {
