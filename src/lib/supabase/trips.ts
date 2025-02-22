@@ -1,43 +1,8 @@
 import { supabase } from '@/lib/supabase';
+import type { Trip as LocalTrip, TripType, TripStatus, DriverProfile } from '@/lib/types';
 
-export type TripType = 'airport' | 'point-to-point' | 'hourly';
-export type TripStatus = 'scheduled' | 'en-route' | 'completed' | 'cancelled';
-
-export interface DriverProfile {
-  license_number: string;
-  vehicle_make: string;
-  vehicle_model: string;
-  vehicle_year: number;
-  vehicle_color: string;
-  vehicle_plate: string;
-  email?: string;
-  avatar_url?: string;
-}
-
-export interface Trip {
-  id: string;
-  user_id: string;
-  driver_id?: string;
-  driver?: {
-    full_name: string;
-    phone_number?: string;
-    email?: string;
-    avatar_url?: string;
-    driver_profile?: DriverProfile;
-  };
-  trip_type: TripType;
-  status: TripStatus;
-  pickup_time: string;
-  pickup_location: string;
-  dropoff_location?: string;
-  flight_number?: string;
-  hours?: number;
-  cost?: number;
-  rating?: number;
-  reviewed: boolean;
-  created_at: string;
-  updated_at: string;
-}
+export type { TripType, TripStatus, DriverProfile };
+export type Trip = LocalTrip;
 
 export interface CreateTripInput {
   trip_type: TripType;

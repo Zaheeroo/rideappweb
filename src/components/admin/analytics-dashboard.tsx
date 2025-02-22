@@ -173,7 +173,7 @@ export default function AnalyticsDashboard() {
                   {formatCurrency(destination.totalRevenue)}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {((destination.totalRevenue / stats.totalRevenue) * 100).toFixed(1)}% of revenue
+                  {stats ? `${((destination.totalRevenue / stats.totalRevenue) * 100).toFixed(1)}% of revenue` : 'Loading...'}
                 </p>
               </div>
             </div>

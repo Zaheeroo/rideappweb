@@ -2,7 +2,8 @@
 
 import { Calendar, MapPin, Star, User } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { getPastTrips, updateTripRating, type Trip } from '@/lib/supabase/trips';
+import { getPastTrips, updateTripRating } from '@/lib/supabase/trips';
+import type { Trip } from '@/lib/types';
 import { toast } from 'sonner';
 import TripDetailsModal from './trip-details-modal';
 import Image from 'next/image';
@@ -176,13 +177,13 @@ export default function PastTrips() {
                     </div>
                   )}
 
-                  {trip.trip_type === 'airport' && trip.flight_number && (
+                  {(trip.trip_type === 'airport_pickup' || trip.trip_type === 'airport_dropoff') && trip.flight_number && (
                     <div className="text-gray-800">
                       <span className="font-medium">Flight:</span> {trip.flight_number}
                     </div>
                   )}
 
-                  {trip.trip_type === 'hourly' && trip.hours && (
+                  {trip.trip_type === 'city_tour' && trip.hours && (
                     <div className="text-gray-800">
                       <span className="font-medium">Duration:</span> {trip.hours} hours
                     </div>
@@ -225,7 +226,8 @@ export default function PastTrips() {
       )}
 
       <TripDetailsModal
-        tripId={selectedTripId}
+        trip={trips.find(trip => trip.id === selectedTripId) || null}
+        isOpen={!!selectedTripId}
         onClose={() => setSelectedTripId(null)}
       />
     </section>
